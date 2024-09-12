@@ -1,8 +1,13 @@
 package example;
 
 import arc.*;
+import arc.graphics.g2d.TextureRegion;
 import arc.util.*;
+import java.awt.FileDialog;
+import java.awt.Frame;
+import java.io.File;
 import mindustry.*;
+import static mindustry.Vars.ui;
 import mindustry.content.*;
 import mindustry.game.EventType.*;
 import mindustry.gen.*;
@@ -25,6 +30,19 @@ public class ExampleJavaMod extends Mod{
                 dialog.cont.button("I see", dialog::hide).size(100f, 50f);
                 dialog.show();
             });
+        });
+        
+        ui.menufrag.addButton("Place Image", () -> {
+            Time.runTask(10f, () -> {
+                FileDialog dialog = new FileDialog((Frame) null);
+                dialog.setVisible(true);
+                File file = dialog.getFiles()[0];
+                TextureRegion image = new TextureRegion();
+            });
+            /*new BaseDialog("Image Selector") {{
+                addCloseButton();
+                // Add image selection logic here
+            }}.show();*/
         });
     }
 

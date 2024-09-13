@@ -9,39 +9,38 @@ package example;
  * @author Artemik
  */
 import arc.Core;
-import arc.graphics.g2d.TextureRegion;
 import arc.graphics.g2d.Draw;
-import mindustry.world.Block;
-import mindustry.world.meta.BlockGroup;
+import arc.graphics.g2d.TextureRegion;
+import mindustry.gen.Building;
+import mindustry.world.blocks.production.GenericCrafter;
+import mindustry.type.Category;
 
-public class PaintBlock extends Block {
+public class PaintBlock extends GenericCrafter {
 
-    // Load the custom texture from the atlas
     TextureRegion paintTexture;
 
     public PaintBlock(String name) {
         super(name);
-        group = BlockGroup.production; // Change the block group as needed
-        update = true; // To ensure it updates regularly
+        category = Category.crafting;
     }
 
     @Override
     public void load() {
         super.load();
-        // Load the custom texture from the atlas
         paintTexture = Core.atlas.find("example-java-mod-frog");
     }
 
     @Override
-    public void draw() {
-        super.draw();
-        // Draw the block's default texture
-        Draw.rect(region, x, y);
-
-        // Draw the custom "painted" texture on top
-        if (paintTexture != null) {
-            Draw.rect(paintTexture, x, y);
-        }
+    public void init() {
+        super.init();
+        buildType = () -> new Building() {
+            @Override
+            public void draw() {
+                super.draw();
+                if (paintTexture != null) {
+                    Draw.rect(paintTexture, tile.drawx(), tile.drawy());
+                }
+            }
+        };
     }
 }
-

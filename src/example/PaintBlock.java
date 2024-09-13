@@ -11,36 +11,56 @@ package example;
 import arc.Core;
 import arc.graphics.g2d.Draw;
 import arc.graphics.g2d.TextureRegion;
+import arc.util.io.Reads;
+import arc.util.io.Writes;
 import mindustry.gen.Building;
-import mindustry.world.blocks.production.GenericCrafter;
-import mindustry.type.Category;
+import mindustry.world.Block;
 
-public class PaintBlock extends GenericCrafter {
+public class PaintBlock extends Block {
 
     TextureRegion paintTexture;
 
     public PaintBlock(String name) {
         super(name);
-        category = Category.crafting;
     }
 
     @Override
     public void load() {
         super.load();
-        paintTexture = Core.atlas.find("example-java-mod-frog");
+        paintTexture = Core.atlas.find("example-java-mod-frog");  // Load custom texture
     }
 
-    @Override
-    public void init() {
-        super.init();
-        buildType = () -> new Building() {
-            @Override
-            public void draw() {
-                super.draw();
-                if (paintTexture != null) {
-                    Draw.rect(paintTexture, tile.drawx(), tile.drawy());
-                }
+    // Custom Building class to handle entity behavior
+    public class PaintBlockEntity extends Building {
+
+        boolean isPainted = false;
+
+        @Override
+        public void draw() {
+            super.draw();
+            if (isPainted && paintTexture != null) {
+                // Draw custom texture on top of the block
+                Draw.rect(paintTexture, tile.drawx(), tile.drawy());
             }
-        };
+        }
+
+        @Override
+        public void write(Writes write) {
+            super.write(write);
+            // Save the painted state
+            write.bool(isPainted);
+        }
+
+        @Override
+        public void read(Reads read, byte revision) {
+            super.read(read, revision);
+            // Load the painted state
+            isPainted = read.bool();
+        }
+
+        public void paintBlock() {
+            // Function to paint the block
+            isPainted = true;
+        }
     }
 }
